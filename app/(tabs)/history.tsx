@@ -381,7 +381,7 @@ export default function History() {
                 segments={6}
                 yAxisSuffix="°C"
                 yAxisInterval={1}
-                verticalLabelRotation={45}
+                verticalLabelRotation={-45}
               />
             </View>
 
@@ -409,7 +409,7 @@ export default function History() {
                 segments={5}
                 yAxisSuffix="%"
                 yAxisInterval={1}
-                verticalLabelRotation={45}
+                verticalLabelRotation={-45}
               />
             </View>
           </>
