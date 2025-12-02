@@ -57,6 +57,7 @@ The Dashboard provides:
 - Last-updated timestamps  
 - Color-coded card UI  
 
+You can click on each card to access the detailed analysis.
 This view lets users understand their current environment at a glance.
 
 ---
@@ -264,6 +265,7 @@ images/
 - 显示数据更新时间  
 - 颜色区分各类环境状态  
 
+可以点击页面里的卡片来了解详细信息
 帮助用户快速了解当前室内外环境状况。
 
 ---
