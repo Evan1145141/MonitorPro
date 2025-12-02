@@ -22,7 +22,7 @@ export default function TabLayout() {
           marginTop: 2,
         },
         tabBarItemStyle: {
-          minWidth: 60,
+          minWidth: 40,
           paddingHorizontal: 4,
         },
       }}
