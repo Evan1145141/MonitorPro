@@ -253,6 +253,12 @@ export default function Settings() {
           <Text style={styles.logoutButtonText}>{t.signOut}</Text>
         </TouchableOpacity>
 
+        <View style={styles.disclaimer}>
+          <Text style={styles.disclaimerText}>{t.disclaimerAlpha}</Text>
+          <Text style={styles.disclaimerText}>{t.disclaimerDevelopers}</Text>
+          <Text style={styles.disclaimerText}>{t.disclaimerPurpose}</Text>
+        </View>
+
         <View style={styles.footer}>
           <Text style={styles.footerText}>MonitorPro v1.0.0</Text>
           <Text style={styles.footerSubtext}>Environmental Monitoring System</Text>
@@ -511,8 +517,23 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
+  disclaimer: {
+    backgroundColor: '#fef3c7',
+    borderRadius: 12,
+    padding: 16,
+    marginTop: 24,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: '#fbbf24',
+  },
+  disclaimerText: {
+    fontSize: 13,
+    color: '#92400e',
+    lineHeight: 20,
+    marginBottom: 8,
+  },
   footer: {
-    marginTop: 40,
+    marginTop: 24,
     marginBottom: 20,
     alignItems: 'center',
   },

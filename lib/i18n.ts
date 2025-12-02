@@ -74,6 +74,9 @@ export interface Translations {
   saving: string;
   submitFeedback: string;
   feedback: string;
+  disclaimerAlpha: string;
+  disclaimerDevelopers: string;
+  disclaimerPurpose: string;
 }
 
 const translations: Record<Language, Translations> = {
@@ -151,6 +154,9 @@ const translations: Record<Language, Translations> = {
     saving: 'Saving...',
     submitFeedback: 'Submit Feedback',
     feedback: 'Feedback',
+    disclaimerAlpha: '⚠️ This app is an Alpha testing build with incomplete or unstable features.',
+    disclaimerDevelopers: "👩‍💻 Developed by students at Xi'an Jiaotong-Liverpool University (XJTLU) as part of an academic project.",
+    disclaimerPurpose: '🚫 Strictly for educational and experimental purposes only. Not for commercial use.',
   },
   zh: {
     dashboardTitle: '仪表盘',
@@ -226,6 +232,9 @@ const translations: Record<Language, Translations> = {
     saving: '保存中...',
     submitFeedback: '提交反馈',
     feedback: '反馈',
+    disclaimerAlpha: '⚠️ 此应用为 Alpha 测试版本，功能可能不完整或不稳定。',
+    disclaimerDevelopers: '👩‍💻 由西交利物浦大学 (XJTLU) 学生开发，作为学术项目的一部分。',
+    disclaimerPurpose: '🚫 仅用于教育和实验目的。禁止商业使用。',
   },
 };
 
