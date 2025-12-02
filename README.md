@@ -108,7 +108,11 @@ app/
 
 ## 👥 Team / 开发团队
 
-XJTLU Entrepreneur College (Taicang)
-MonitorPro Development Team
-ENT207-Monday-Group31
-2025
+- XJTLU Entrepreneur College (Taicang)
+- MonitorPro Development Team
+- ENT207-Monday-Group31
+- 2025
+
+© 2025 XJTLU Student Project. All rights reserved.
+For academic use only.
+Not for commercial applications.
