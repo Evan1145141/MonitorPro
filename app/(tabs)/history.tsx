@@ -181,29 +181,7 @@ export default function History() {
     }
 
     // 先拿到原始标签
-    let labels = finalSeries.labels;
-    
-    // 对 hourly 的情况：每 2 个点保留一个 label，其它设为 ''
-    if (timeRange === 'hourly') {
-      labels = labels.map((label, index) => {
-        // 只保留偶数索引的点（0, 2, 4...），你也可以改成 index % 3 === 0 之类
-        if (index % 2 === 0) {
-          // 只显示小时，例如 '01:00' -> '01'
-          return label.slice(0, 2);
-        }
-        return '';
-      });
-    }
-    
-    // 对 daily 的情况：也可以稍微稀疏一下（比如每 3 天），可选
-    if (timeRange === 'daily') {
-      labels = labels.map((label, index) => (index % 3 === 0 ? label : ''));
-    }
-    
-    return {
-      labels,
-      datasets: [{ data: type === 'temperature' ? finalSeries.temps : finalSeries.hums }],
-    };
+      
 
   const getTimeRangeLabel = () => {
     if (timeRange === 'hourly') return t.last24Hours;
