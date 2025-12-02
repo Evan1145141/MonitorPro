@@ -28,9 +28,12 @@ interface Reading {
   timestamp: string;
 }
 
+const screenWidth = Dimensions.get('window').width;
+
 export default function History() {
   const { user, isGuest } = useAuth();
   const { t } = useLanguage();
+
   const [devices, setDevices] = useState<Device[]>([]);
   const [selectedDevice, setSelectedDevice] = useState<string | null>(null);
   const [timeRange, setTimeRange] = useState<'hourly' | 'daily'>('hourly');
@@ -38,8 +41,6 @@ export default function History() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [selectedDeviceData, setSelectedDeviceData] = useState<Device | null>(null);
-
-  const screenWidth = Dimensions.get('window').width;
 
   useEffect(() => {
     fetchDevices();
@@ -67,7 +68,11 @@ export default function History() {
 
     if (isGuest) {
       const guestDevices = createGuestDemoDevices(user.id);
-      const devicesData = guestDevices.map((d) => ({ id: d.id, name: d.name, sensor_id: d.sensor_id }));
+      const devicesData = guestDevices.map((d) => ({
+        id: d.id,
+        name: d.name,
+        sensor_id: d.sensor_id,
+      }));
       setDevices(devicesData);
       setSelectedDevice(devicesData[0].id);
       setSelectedDeviceData(devicesData[0]);
@@ -95,8 +100,7 @@ export default function History() {
     const device = devices.find((d) => d.id === selectedDevice);
     if (!device) return;
 
-    const isOffice =
-      device.sensor_id?.includes('001') || device.name.toLowerCase().includes('office');
+    const isOffice = device.sensor_id?.includes('001') || device.name.toLowerCase().includes('office');
     const baseTemp = isOffice ? 22 : 18;
     const baseHum = isOffice ? 45 : 55;
 
@@ -123,7 +127,7 @@ export default function History() {
       });
     }
 
-    const readingsData: Reading[] = finalSeries.labels.map((label, index) => ({
+    const readingsData: Reading[] = finalSeries.labels.map((_, index) => ({
       temperature: finalSeries.temps[index],
       humidity: finalSeries.hums[index],
       timestamp: new Date().toISOString(),
@@ -132,32 +136,18 @@ export default function History() {
     setReadings(readingsData);
   };
 
-  /** 这里是修改重点：对 labels 做稀疏处理 + 用更小的点 */
-  const getChartData = (type: 'temperature' | 'humidity') => {
-    if (readings.length === 0) {
-      return {
-        labels: [''],
-        datasets: [{ data: [0] }],
-      };
-    }
-
-    if (!selectedDeviceData) {
-      return {
-        labels: [''],
-        datasets: [{ data: [0] }],
-      };
+  // 只在这里算一次 series，然后给温度 / 湿度共用
+  const buildChartData = (type: 'temperature' | 'humidity') => {
+    if (!selectedDeviceData || devices.length === 0) {
+      return { labels: [''], datasets: [{ data: [0] }] };
     }
 
     const device = devices.find((d) => d.id === selectedDevice);
     if (!device) {
-      return {
-        labels: [''],
-        datasets: [{ data: [0] }],
-      };
+      return { labels: [''], datasets: [{ data: [0] }] };
     }
 
-    const isOffice =
-      device.sensor_id?.includes('001') || device.name.toLowerCase().includes('office');
+    const isOffice = device.sensor_id?.includes('001') || device.name.toLowerCase().includes('office');
     const baseTemp = isOffice ? 22 : 18;
     const baseHum = isOffice ? 45 : 55;
 
@@ -184,37 +174,20 @@ export default function History() {
       });
     }
 
-    if (finalSeries.labels.length < 2) {
-      return {
-        labels: [''],
-        datasets: [{ data: [0] }],
-      };
+    if (!finalSeries || finalSeries.labels.length < 2) {
+      return { labels: [''], datasets: [{ data: [0] }] };
     }
 
-    // === 对 X 轴标签做稀疏处理 ===
-    let labels = finalSeries.labels;
+    // 每 2 个点显示一个 label，其余留空，避免挤在一起
+    const filteredLabels = finalSeries.labels.map((label: string, index: number) =>
+      index % 2 === 0 ? label : ''
+    );
 
-    if (timeRange === 'hourly') {
-      // 24 小时：每 2 小时显示一个标签
-      labels = labels.map((label, index) => {
-        if (index % 2 === 0) {
-          // 例如 "01:00" -> "01"
-          return label.slice(0, 2);
-        }
-        return '';
-      });
-    } else {
-      // 30 天：每 3 天显示一个标签（可按需调）
-      labels = labels.map((label, index) => (index % 3 === 0 ? label : ''));
-    }
+    const dataArray = type === 'temperature' ? finalSeries.temps : finalSeries.hums;
 
     return {
-      labels,
-      datasets: [
-        {
-          data: type === 'temperature' ? finalSeries.temps : finalSeries.hums,
-        },
-      ],
+      labels: filteredLabels,
+      datasets: [{ data: dataArray }],
     };
   };
 
@@ -243,7 +216,7 @@ export default function History() {
       borderRadius: 16,
     },
     propsForDots: {
-      r: '4', // 原来是 6，现在改小
+      r: '4',          // 数据点更小
       strokeWidth: '2',
       stroke: type === 'temperature' ? '#14b8a6' : '#3b82f6',
     },
@@ -284,6 +257,12 @@ export default function History() {
       </View>
     );
   }
+
+  const temperatureData = buildChartData('temperature');
+  const humidityData = buildChartData('humidity');
+
+  const hasTempData = readings.length > 0 && temperatureData.labels[0] !== '';
+  const hasHumData = readings.length > 0 && humidityData.labels[0] !== '';
 
   return (
     <View style={styles.container}>
@@ -336,7 +315,7 @@ export default function History() {
           ))}
         </View>
 
-        {readings.length === 0 || getChartData('temperature').labels[0] === '' ? (
+        {!hasTempData ? (
           <View style={styles.noDataContainer}>
             <Text style={styles.noDataText}>{t.noDataAvailable}</Text>
           </View>
@@ -378,7 +357,6 @@ export default function History() {
               </View>
             </View>
 
-            {/* 温度趋势 */}
             <View style={styles.chartCard}>
               <View style={styles.chartHeader}>
                 <Text style={styles.chartTitle}>{t.temperatureTrend}</Text>
@@ -386,33 +364,27 @@ export default function History() {
                   {getTimeRangeLabel()} · {getCurrentDeviceName()}
                 </Text>
               </View>
-              <ScrollView horizontal showsHorizontalScrollIndicator={true}>
-                <LineChart
-                  data={getChartData('temperature')}
-                  width={Math.max(
-                    screenWidth - 64,
-                    getChartData('temperature').labels.length * 40,
-                  )}
-                  height={240}
-                  chartConfig={getChartConfig('temperature')}
-                  bezier
-                  style={styles.chart}
-                  withInnerLines={true}
-                  withOuterLines={true}
-                  withVerticalLines={false}
-                  withHorizontalLines={true}
-                  withDots={true}
-                  withShadow={false}
-                  fromZero={true}
-                  segments={6}
-                  yAxisSuffix="°C"
-                  yAxisInterval={1}
-                  horizontalLabelRotation={-45}
-                />
-              </ScrollView>
+              <LineChart
+                data={temperatureData}
+                width={screenWidth - 64}
+                height={240}
+                chartConfig={getChartConfig('temperature')}
+                bezier
+                style={styles.chart}
+                withInnerLines
+                withOuterLines
+                withVerticalLines={false}
+                withHorizontalLines
+                withDots
+                withShadow={false}
+                fromZero
+                segments={6}
+                yAxisSuffix="°C"
+                yAxisInterval={1}
+                verticalLabelRotation={45}
+              />
             </View>
 
-            {/* 湿度趋势 */}
             <View style={styles.chartCard}>
               <View style={styles.chartHeader}>
                 <Text style={styles.chartTitle}>{t.humidityTrend}</Text>
@@ -420,30 +392,25 @@ export default function History() {
                   {getTimeRangeLabel()} · {getCurrentDeviceName()}
                 </Text>
               </View>
-              <ScrollView horizontal showsHorizontalScrollIndicator={true}>
-                <LineChart
-                  data={getChartData('humidity')}
-                  width={Math.max(
-                    screenWidth - 64,
-                    getChartData('humidity').labels.length * 40,
-                  )}
-                  height={240}
-                  chartConfig={getChartConfig('humidity')}
-                  bezier
-                  style={styles.chart}
-                  withInnerLines={true}
-                  withOuterLines={true}
-                  withVerticalLines={false}
-                  withHorizontalLines={true}
-                  withDots={true}
-                  withShadow={false}
-                  fromZero={true}
-                  segments={5}
-                  yAxisSuffix="%"
-                  yAxisInterval={1}
-                  horizontalLabelRotation={-45}
-                />
-              </ScrollView>
+              <LineChart
+                data={humidityData}
+                width={screenWidth - 64}
+                height={240}
+                chartConfig={getChartConfig('humidity')}
+                bezier
+                style={styles.chart}
+                withInnerLines
+                withOuterLines
+                withVerticalLines={false}
+                withHorizontalLines
+                withDots
+                withShadow={false}
+                fromZero
+                segments={5}
+                yAxisSuffix="%"
+                yAxisInterval={1}
+                verticalLabelRotation={45}
+              />
             </View>
           </>
         )}
@@ -630,4 +597,3 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
 });
- 
