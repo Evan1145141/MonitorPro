@@ -1,78 +1,114 @@
-# MonitorPro · Intelligent Climate & Lifestyle Companion  
-Environment Monitoring App with AI Assistance  
-（中英文双语说明 / Chinese & English README）
+# MonitorPro — Intelligent Climate & Lifestyle Companion  
+*A Smart Environment Monitoring App with AI Assistance*  
+（中文与英文双语说明）
 
 ---
 
-## ⚠️ 重要声明（Disclaimer）
+## ⚠️ Disclaimer / 免责声明
 
 ### 🇨🇳 中文说明
-- ⚠️ **本应用为 Alpha 测试版本**，功能可能不稳定或不完整。  
-- 👩‍💻 本软件由 **西交利物浦大学（XJTLU）学生团队开发**，作为课程项目的一部分。  
-- 🚫 **应用仅用于教学、课程作业与实验用途，不用于商业目的。**  
-- 📊 所有气象与传感器数据均为模拟或测试数据，不代表真实环境状况。  
-- 🤖 AI 助手仅做演示用途，其建议不构成任何专业指导。  
-- 📱 若您克隆或使用本项目，请确保遵守相关法律法规，并避免在生产环境中使用。
+- ⚠️ **本应用为 Alpha 测试版本，功能可能不完整或不稳定。**  
+- 👩‍💻 此软件由 **西交利物浦大学学生团队** 开发，作为课程项目的一部分。  
+- 🚫 **仅用于教学、学术与实验用途，不作商业使用。**  
+- 📊 所有传感器/气象数据均为模拟或测试数据，不具有真实参考意义。  
+- 🤖 AI 助手仅用于展示，不构成任何专业建议。
 
-### 🇬🇧 English Disclaimer
-- ⚠️ **This application is an Alpha testing build**, and some features may be incomplete or unstable.  
-- 👩‍💻 Developed by **students of Xi’an Jiaotong-Liverpool University (XJTLU)** as part of a course assignment.  
-- 🚫 **This project is strictly for educational, academic, and experimental purposes only. Not for commercial use.**  
-- 📊 All sensor/meteorological data are simulated or mocked and should not be considered real data.  
-- 🤖 The AI assistant is for demonstration only and does not provide professional advice.  
-- 📱 If you clone or use this project, ensure compliance with local laws and avoid using it in production.
+### 🇬🇧 English
+- ⚠️ **This app is an Alpha testing build with incomplete or unstable features.**  
+- 👩‍💻 Developed by **students at Xi’an Jiaotong-Liverpool University (XJTLU)** as part of an academic project.  
+- 🚫 **Strictly for educational and experimental purposes only. Not for commercial use.**  
+- 📊 All sensor/weather data are simulated for demonstration.  
+- 🤖 The AI assistant is for demo purposes only and does not provide professional advice.
 
 ---
 
-## 🌟 项目简介（Project Overview）
+## 🌟 Project Overview / 项目简介
 
-### 🇨🇳 中文说明
-**MonitorPro** 是一款智能环境监测与生活方式辅助应用，整合室内/室外传感器数据、天气预报、AI 建议与可视化功能，旨在探索人居环境与智能助理的结合方式。
-
-本项目包含：
-- 📡 室内 / 室外温湿度监测（模拟数据）
-- 🌤 天气预报展示
-- 📈 历史数据折线图
-- 🤖 AI 建议生成（DeepSeek/OpenAI API）
-- 🔔 传感器状态评估（Optimal / Warning / Critical）
-- 📱 响应式 UI + 底部导航设计
-- 🧩 前端基于 React Native / Expo
+### 🇨🇳 中文简介
+**MonitorPro** 是一个结合室内/室外环境监测、天气预报、AI 分析的智能生活助手。  
+应用通过清晰的仪表盘、趋势图与个性化建议，帮助用户更好理解周围的气候环境。
 
 ### 🇬🇧 English Overview
-**MonitorPro** is an intelligent environment monitoring and lifestyle assistant app that integrates indoor/outdoor sensor readings, weather forecasting, AI-driven suggestions, and clean data visualization.  
-
-Key components include:
-- 📡 Indoor/Outdoor temperature & humidity monitoring (mocked data)
-- 🌤 Weather forecast display
-- 📈 Historical trend visualization (line charts)
-- 🤖 AI-powered advice (DeepSeek / OpenAI API)
-- 🔔 Sensor status evaluation (Optimal / Warning / Critical)
-- 📱 Responsive UI with bottom navigation
-- 🧩 Built with React Native / Expo
+**MonitorPro** is a smart climate and lifestyle companion integrating sensor monitoring, weather forecasting, and AI-powered suggestions.  
+It provides dashboards, trend visualization, and contextual recommendations to help users understand and optimize their living environment.
 
 ---
 
-## 🛠️ 技术栈（Tech Stack）
+## ✨ Key Features / 核心功能
 
-### Frontend
+### 📡 Sensor Monitoring（传感器监测）
+- Indoor & outdoor temperature  
+- Indoor & outdoor humidity  
+- Real-time status badges（Optimal / Warning / Critical）  
+- Mock data generation for testing
+
+### 📈 Trend Visualization（趋势图）
+- Last 1-hour mini trend  
+- Smooth bezier charts  
+- Real-time timestamp labeling  
+
+### 🌤 Weather Module（天气模块）
+- Real-time outdoor weather  
+- 3-day forecast  
+- Dynamic weather icons（Cloudy, Rain, Sunny, Fog, Windy 等）
+
+### 🤖 AI Assistant（AI 助手）
+- 生活方式建议（通风、加湿、除湿、穿衣等）  
+- 深入解释温湿度状态  
+- 动态生成情境建议（如“干燥天气”“温差大”“湿冷”）
+
+### 💬 Feedback System（反馈系统）
+- 内置反馈表单  
+- 后台 (Bolt / Supabase) 自动存储与时间戳记录  
+- 测试报告基于真实用户反馈整理
+
+### ⚙️ Device Management（设备管理）
+- Sensor list  
+- Battery level display  
+- Device deletion & location info  
+- 全局统一卡片 UI
+
+---
+
+## 🛠️ Tech Stack / 技术栈
+
 - **React Native (Expo)**
-- Typescript
-- react-native-chart-kit  
-- lucide-react-native  
+- Typescript  
 - Zustand / Context API  
-
-### Backend / Data
-- **Supabase / Bolt IoT Backend**（用于反馈、账号、设备信息）
-- Mock server for sensor data  
-- DeepSeek/OpenAI API for AI Assistant  
-
-### Dev Tools
-- VSCode  
-- Expo Go  
-- GitHub Version Control  
+- react-native-chart-kit  
+- lucide-react-native icons  
+- Supabase / Bolt backend  
+- DeepSeek / OpenAI API for AI
 
 ---
 
-## 🚀 如何启动项目（How to Run This Project）
+## 📂 Folder Structure / 文件结构
 
-### 1. Clone 仓库 / Clone repo
+app/
+  tabs/
+    dashboard.tsx
+    weather.tsx
+    devices.tsx
+    history.tsx
+    settings.tsx
+  components/
+    SensorCard.tsx
+    SensorDetailSheet.tsx
+  utils/
+    miniTrend.ts
+    suggestions.ts
+    statusLogic.ts
+  contexts/
+    LanguageContext.tsx
+  assets/
+    icons/
+    images/
+
+---
+
+## 👥 Team / 开发团队
+
+XJTLU Entrepreneur College (Taicang)
+MonitorPro Development Team
+ENT207-Monday-Group31
+2025
