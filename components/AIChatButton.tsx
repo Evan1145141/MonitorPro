@@ -27,7 +27,7 @@ export default function AIChatButton() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: 'Hello! I can analyze your sensor data and provide recommendations. Ask me anything! I have connected to deepseek!',
+      text: 'Hello! I can analyze your sensor data and provide recommendations. Ask me anything! I have connected to Deepseek!',
       isUser: false,
     },
   ]);
