@@ -216,7 +216,7 @@ export default function History() {
       borderRadius: 16,
     },
     propsForDots: {
-      r: '4',          // 数据点更小
+      r: '2.5',          // 数据点更小
       strokeWidth: '2',
       stroke: type === 'temperature' ? '#14b8a6' : '#3b82f6',
     },
