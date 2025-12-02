@@ -348,55 +348,57 @@ export default function History() {
             <View style={styles.chartCard}>
               <View style={styles.chartHeader}>
                 <Text style={styles.chartTitle}>{t.temperatureTrend}</Text>
-                <Text style={styles.chartSubtitle}>{getTimeRangeLabel()} · {getCurrentDeviceName()}</Text>
+                <Text style={styles.chartSubtitle}>
+                  {getTimeRangeLabel()} · {getCurrentDeviceName()}
+                </Text>
               </View>
-              <ScrollView horizontal showsHorizontalScrollIndicator={true}>
-                <LineChart
-                  data={getChartData('temperature')}
-                  width={Math.max(screenWidth - 64, getChartData('temperature').labels.length * 40)}
-                  height={240}
-                  chartConfig={getChartConfig('temperature')}
-                  bezier
-                  style={styles.chart}
-                  withInnerLines={true}
-                  withOuterLines={true}
-                  withVerticalLines={false}
-                  withHorizontalLines={true}
-                  withDots={true}
-                  withShadow={false}
-                  fromZero={true}
-                  segments={6}
-                  yAxisSuffix="°C"
-                  yAxisInterval={1}
-                />
-              </ScrollView>
+              <LineChart
+                data={getChartData('temperature')}
+                // 固定在卡片的可视宽度内
+                width={screenWidth - 64}
+                height={240}
+                chartConfig={getChartConfig('temperature')}
+                bezier
+                style={styles.chart}
+                withInnerLines={true}
+                withOuterLines={true}
+                withVerticalLines={false}
+                withHorizontalLines={true}
+                withDots={true}
+                withShadow={false}
+                fromZero={true}
+                segments={6}
+                yAxisSuffix="°C"
+                yAxisInterval={1}
+              />
             </View>
+
 
             <View style={styles.chartCard}>
               <View style={styles.chartHeader}>
                 <Text style={styles.chartTitle}>{t.humidityTrend}</Text>
-                <Text style={styles.chartSubtitle}>{getTimeRangeLabel()} · {getCurrentDeviceName()}</Text>
+                <Text style={styles.chartSubtitle}>
+                  {getTimeRangeLabel()} · {getCurrentDeviceName()}
+                </Text>
               </View>
-              <ScrollView horizontal showsHorizontalScrollIndicator={true}>
-                <LineChart
-                  data={getChartData('humidity')}
-                  width={Math.max(screenWidth - 64, getChartData('humidity').labels.length * 40)}
-                  height={240}
-                  chartConfig={getChartConfig('humidity')}
-                  bezier
-                  style={styles.chart}
-                  withInnerLines={true}
-                  withOuterLines={true}
-                  withVerticalLines={false}
-                  withHorizontalLines={true}
-                  withDots={true}
-                  withShadow={false}
-                  fromZero={true}
-                  segments={5}
-                  yAxisSuffix="%"
-                  yAxisInterval={1}
-                />
-              </ScrollView>
+              <LineChart
+                data={getChartData('humidity')}
+                width={screenWidth - 64}
+                height={240}
+                chartConfig={getChartConfig('humidity')}
+                bezier
+                style={styles.chart}
+                withInnerLines={true}
+                withOuterLines={true}
+                withVerticalLines={false}
+                withHorizontalLines={true}
+                withDots={true}
+                withShadow={false}
+                fromZero={true}
+                segments={5}
+                yAxisSuffix="%"
+                yAxisInterval={1}
+              />
             </View>
           </>
         )}
@@ -490,7 +492,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 4,
-    alignItems: 'center',
+    //alignItems: 'center',
   },
   chartHeader: {
     width: '100%',
