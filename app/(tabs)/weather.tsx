@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  TouchableOpacity,
 } from 'react-native';
 import { Home, Calendar, Lightbulb } from 'lucide-react-native';
 import { mockWeatherProvider } from '@/lib/weatherProvider';
@@ -37,24 +36,28 @@ interface IndoorData {
 export default function Weather() {
   const { user, isGuest } = useAuth();
   const { t } = useLanguage();
-  const [useMockData, setUseMockData] = useState(true);
-  const [outdoorWeather, setOutdoorWeather] = useState(mockWeatherProvider.getWeatherNow());
-  const [forecast, setForecast] = useState(mockWeatherProvider.getForecast());
+
+  // 始终使用 mockWeatherProvider
+  const [outdoorWeather, setOutdoorWeather] = useState(
+    mockWeatherProvider.getWeatherNow()
+  );
+  const [forecast, setForecast] = useState(
+    mockWeatherProvider.getForecast()
+  );
   const [indoorData, setIndoorData] = useState<IndoorData | null>(null);
 
   useEffect(() => {
     fetchIndoorData();
   }, [user]);
 
+  // 定时刷新室外 mock 数据
   useEffect(() => {
-    if (!useMockData) return;
-
     const interval = setInterval(() => {
       setOutdoorWeather(mockWeatherProvider.getWeatherNow(true));
     }, 12000);
 
     return () => clearInterval(interval);
-  }, [useMockData]);
+  }, []);
 
   const fetchIndoorData = async () => {
     if (!user) return;
@@ -127,146 +130,150 @@ export default function Weather() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
+        {/* 只保留标题，不再显示 Mock 按钮 */}
         <Text style={styles.headerTitle}>{t.weatherTitle} · Taicang</Text>
-        <TouchableOpacity
-          style={styles.toggleButton}
-          onPress={() => setUseMockData(!useMockData)}
-        >
-          <Text style={styles.toggleText}>{useMockData ? 'Mock ON' : 'Mock OFF'}</Text>
-        </TouchableOpacity>
       </View>
 
       <ScrollView style={styles.scrollView}>
-        {!useMockData ? (
-          <View style={styles.card}>
-            <Text style={styles.placeholderText}>Real API not enabled</Text>
-          </View>
-        ) : (
-          <>
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>{t.currentWeather}</Text>
-              <View style={styles.row}>
-                <View style={[styles.card, styles.halfCard]}>
-                  <View style={styles.cardHeader}>
-                    <Home size={20} color="#14b8a6" />
-                    <Text style={styles.cardTitle}>Indoor</Text>
-                  </View>
-                  {indoorData ? (
-                    <>
-                      <Text style={[styles.mainValue, { color: INDOOR_TEMP_COLOR }]}>
-                        {indoorData.temp.toFixed(1)}°C
-                      </Text>
-                      <View style={styles.detailRow}>
-                        <Text style={styles.detailLabel}>{t.humidity}</Text>
-                        <Text style={styles.detailValue}>{indoorData.humidity}%</Text>
-                      </View>
-                      {indoorData.pm25 !== undefined && (
-                        <View style={styles.detailRow}>
-                          <Text style={styles.detailLabel}>PM2.5</Text>
-                          <Text style={[styles.detailValue, { color: getPM25Color(indoorData.pm25) }]}>
-                            {indoorData.pm25}
-                          </Text>
-                          <Text style={styles.detailLabel}> µg/m³</Text>
-                        </View>
-                      )}
-                      <Text style={styles.timestamp}>{indoorData.deviceName}</Text>
-                    </>
-                  ) : (
-                    <Text style={styles.noDataText}>No device data</Text>
-                  )}
-                </View>
-
-                <View style={[styles.card, styles.halfCard]}>
-                  <View style={styles.cardHeader}>
-                    {(() => {
-                      const { Icon, color } = getWeatherIcon(outdoorWeather.condition);
-                      return <Icon size={20} color={color} />;
-                    })()}
-                    <Text style={styles.cardTitle}>Outdoor</Text>
-                  </View>
-                  <Text style={[styles.mainValue, { color: OUTDOOR_TEMP_COLOR }]}>
-                    {outdoorWeather.temp.toFixed(1)}°C
+        {/* 当前天气 */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>{t.currentWeather}</Text>
+          <View style={styles.row}>
+            {/* 室内卡片 */}
+            <View style={[styles.card, styles.halfCard]}>
+              <View style={styles.cardHeader}>
+                <Home size={20} color="#14b8a6" />
+                <Text style={styles.cardTitle}>Indoor</Text>
+              </View>
+              {indoorData ? (
+                <>
+                  <Text style={[styles.mainValue, { color: INDOOR_TEMP_COLOR }]}>
+                    {indoorData.temp.toFixed(1)}°C
                   </Text>
                   <View style={styles.detailRow}>
                     <Text style={styles.detailLabel}>{t.humidity}</Text>
-                    <Text style={styles.detailValue}>{outdoorWeather.humidity}%</Text>
+                    <Text style={styles.detailValue}>{indoorData.humidity}%</Text>
                   </View>
-                  <View style={styles.detailRow}>
-                    <Text style={styles.detailLabel}>PM2.5</Text>
-                    <Text style={[styles.detailValue, { color: getPM25Color(outdoorWeather.pm25) }]}>
-                      {outdoorWeather.pm25}
+                  {indoorData.pm25 !== undefined && (
+                    <View style={styles.detailRow}>
+                      <Text style={styles.detailLabel}>PM2.5</Text>
+                      <Text
+                        style={[
+                          styles.detailValue,
+                          { color: getPM25Color(indoorData.pm25) },
+                        ]}
+                      >
+                        {indoorData.pm25}
+                      </Text>
+                      <Text style={styles.detailLabel}> µg/m³</Text>
+                    </View>
+                  )}
+                  <Text style={styles.timestamp}>{indoorData.deviceName}</Text>
+                </>
+              ) : (
+                <Text style={styles.noDataText}>No device data</Text>
+              )}
+            </View>
+
+            {/* 室外卡片 */}
+            <View style={[styles.card, styles.halfCard]}>
+              <View style={styles.cardHeader}>
+                {(() => {
+                  const { Icon, color } = getWeatherIcon(outdoorWeather.condition);
+                  return <Icon size={20} color={color} />;
+                })()}
+                <Text style={styles.cardTitle}>Outdoor</Text>
+              </View>
+              <Text style={[styles.mainValue, { color: OUTDOOR_TEMP_COLOR }]}>
+                {outdoorWeather.temp.toFixed(1)}°C
+              </Text>
+              <View style={styles.detailRow}>
+                <Text style={styles.detailLabel}>{t.humidity}</Text>
+                <Text style={styles.detailValue}>{outdoorWeather.humidity}%</Text>
+              </View>
+              <View style={styles.detailRow}>
+                <Text style={styles.detailLabel}>PM2.5</Text>
+                <Text
+                  style={[
+                    styles.detailValue,
+                    { color: getPM25Color(outdoorWeather.pm25) },
+                  ]}
+                >
+                  {outdoorWeather.pm25}
+                </Text>
+                <Text style={styles.detailLabel}> µg/m³</Text>
+              </View>
+              <Text style={styles.conditionText}>
+                {outdoorWeather.condition
+                  .charAt(0)
+                  .toUpperCase() +
+                  outdoorWeather.condition.slice(1).replace('_', ' ')}
+              </Text>
+              <Text style={styles.timestamp}>
+                Updated {formatTime(outdoorWeather.timestamp)}
+              </Text>
+            </View>
+          </View>
+        </View>
+
+        {/* 预报 */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Calendar size={20} color="#14b8a6" />
+            <Text style={styles.sectionTitle}>{t.forecast}</Text>
+          </View>
+          {forecast.map((day, index) => {
+            const { Icon, color } = getWeatherIcon(day.condition);
+            return (
+              <View key={index} style={styles.forecastCard}>
+                <View style={styles.forecastLeft}>
+                  <Icon size={22} color={color} />
+                  <View style={styles.forecastDate}>
+                    <Text style={styles.forecastDateText}>{formatDate(day.date)}</Text>
+                    <Text style={styles.forecastCondition}>
+                      {day.condition.charAt(0).toUpperCase() +
+                        day.condition.slice(1).replace('_', ' ')}
                     </Text>
-                    <Text style={styles.detailLabel}> µg/m³</Text>
                   </View>
-                  <Text style={styles.conditionText}>
-                    {outdoorWeather.condition.charAt(0).toUpperCase() +
-                      outdoorWeather.condition.slice(1).replace('_', ' ')}
-                  </Text>
-                  <Text style={styles.timestamp}>
-                    Updated {formatTime(outdoorWeather.timestamp)}
+                </View>
+                <View style={styles.forecastRight}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                    <Text style={[styles.forecastTemp, { color: HIGH_TEMP_COLOR }]}>
+                      {day.tempHigh}°
+                    </Text>
+                    <Text style={[styles.forecastTemp, { color: TEXT_MUTED }]}>/</Text>
+                    <Text style={[styles.forecastTemp, { color: LOW_TEMP_COLOR }]}>
+                      {day.tempLow}°
+                    </Text>
+                  </View>
+                  <Text style={styles.forecastDetail}>
+                    Hum: {day.humidity}% · PM2.5:{' '}
+                    <Text style={{ color: getPM25Color(day.pm25) }}>{day.pm25}</Text>
                   </Text>
                 </View>
               </View>
-            </View>
+            );
+          })}
+        </View>
 
-            <View style={styles.section}>
-              <View style={styles.sectionHeader}>
-                <Calendar size={20} color="#14b8a6" />
-                <Text style={styles.sectionTitle}>{t.forecast}</Text>
+        {/* 推荐 */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Lightbulb size={20} color="#14b8a6" />
+            <Text style={styles.sectionTitle}>Recommendations</Text>
+          </View>
+          <View style={styles.card}>
+            {recommendations.map((rec, index) => (
+              <View key={index} style={styles.recommendationItem}>
+                <View style={styles.bullet} />
+                <View style={styles.recommendationContent}>
+                  <Text style={styles.recommendationCategory}>{rec.category}</Text>
+                  <Text style={styles.recommendationText}>{rec.text}</Text>
+                </View>
               </View>
-              {forecast.map((day, index) => {
-                const { Icon, color } = getWeatherIcon(day.condition);
-                return (
-                  <View key={index} style={styles.forecastCard}>
-                    <View style={styles.forecastLeft}>
-                      <Icon size={22} color={color} />
-                      <View style={styles.forecastDate}>
-                        <Text style={styles.forecastDateText}>{formatDate(day.date)}</Text>
-                        <Text style={styles.forecastCondition}>
-                          {day.condition.charAt(0).toUpperCase() +
-                            day.condition.slice(1).replace('_', ' ')}
-                        </Text>
-                      </View>
-                    </View>
-                    <View style={styles.forecastRight}>
-                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                        <Text style={[styles.forecastTemp, { color: HIGH_TEMP_COLOR }]}>
-                          {day.tempHigh}°
-                        </Text>
-                        <Text style={[styles.forecastTemp, { color: TEXT_MUTED }]}>/</Text>
-                        <Text style={[styles.forecastTemp, { color: LOW_TEMP_COLOR }]}>
-                          {day.tempLow}°
-                        </Text>
-                      </View>
-                      <Text style={styles.forecastDetail}>
-                        Hum: {day.humidity}% · PM2.5:{' '}
-                        <Text style={{ color: getPM25Color(day.pm25) }}>{day.pm25}</Text>
-                      </Text>
-                    </View>
-                  </View>
-                );
-              })}
-            </View>
-
-            <View style={styles.section}>
-              <View style={styles.sectionHeader}>
-                <Lightbulb size={20} color="#14b8a6" />
-                <Text style={styles.sectionTitle}>Recommendations</Text>
-              </View>
-              <View style={styles.card}>
-                {recommendations.map((rec, index) => (
-                  <View key={index} style={styles.recommendationItem}>
-                    <View style={styles.bullet} />
-                    <View style={styles.recommendationContent}>
-                      <Text style={styles.recommendationCategory}>{rec.category}</Text>
-                      <Text style={styles.recommendationText}>{rec.text}</Text>
-                    </View>
-                  </View>
-                ))}
-              </View>
-            </View>
-          </>
-        )}
+            ))}
+          </View>
+        </View>
       </ScrollView>
 
       <AIChatButton />
@@ -294,17 +301,6 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: '700',
     color: '#14b8a6',
-  },
-  toggleButton: {
-    backgroundColor: '#14b8a6',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 6,
-  },
-  toggleText: {
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: '600',
   },
   scrollView: {
     flex: 1,
@@ -356,7 +352,7 @@ const styles = StyleSheet.create({
   mainValue: {
     fontSize: 36,
     fontWeight: '700',
-    color: '#14b8a6',
+    color: PRIMARY_GREEN,
     marginBottom: 12,
   },
   detailRow: {
