@@ -492,7 +492,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 4,
-    //alignItems: 'center',
+    alignItems: 'center',
   },
   chartHeader: {
     width: '100%',
